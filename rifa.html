@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa - Sistema Pix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            color: white;
+        }
+        section {
+            padding: 20px;
+        }
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .number-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .number-button.disabled {
+            background-color: #888;
+            cursor: not-allowed;
+        }
+        .submit-button, .copy-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .copy-button {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Participe da Nossa Rifa!</h1>
+    <p>Concorra a um incrível creme da Natura!</p>
+</header>
+
+<section>
+    <h2>Escolha seu Número</h2>
+    <div class="buttons-container" id="buttons-container"></div>
+</section>
+
+<section>
+    <h2>Código Pix Gerado</h2>
+    <textarea id="pix-code" readonly></textarea>
+    <br>
+    <button id="copy" class="copy-button">Copiar Código Pix</button>
+</section>
+
+<footer>
+    <p>Obrigado por participar e apoiar nossa causa!</p>
+</footer>
+
+<!-- Firebase Integration -->
+<script type="module">
+  // Import the functions from the Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBndFmOETluRi5uZ5gNwrkR0ynn9Me7omg",
+    authDomain: "rifa-22ae3.firebaseapp.com",
+    databaseURL: "https://rifa-22ae3-default-rtdb.firebaseio.com",
+    projectId: "rifa-22ae3",
+    storageBucket: "rifa-22ae3.appspot.com",
+    messagingSenderId: "605922716743",
+    appId: "1:605922716743:web:7f0eff8ee06648169c9562"
+  };
+
+  // Initialize Firebase and Database
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Função para criar os botões dos números
+  function criarBotoes(escolhidos) {
+    const container = document.getElementById('buttons-container');
+
+    for (let i = 1; i <= 100; i++) {
+      const button = document.createElement('button');
+      button.innerText = i;
+      button.className = 'number-button';
+      button.id = `button-${i}`;
+
+      // Verifica se o número já foi escolhido
+      if (escolhidos.includes(i)) {
+        button.classList.add('disabled');
+        button.disabled = true;
+      }
+
+      // Adiciona evento de clique para os números não escolhidos
+      if (!button.disabled) {
+        button.addEventListener('click', () => escolherNumero(i));
+      }
+
+      container.appendChild(button);
+    }
+  }
+
+  // Função para escolher o número e atualizar o Firebase
+  function escolherNumero(numero) {
+    const pixKey = "mccambiatti@gmail.com";  // Chave Pix
+
+    // Registra o número escolhido no Firebase
+    const numeroRef = ref(db, 'escolhidos/' + numero);
+    set(numeroRef, true).then(() => {
+      alert(`Número ${numero} escolhido com sucesso!`);
+
+      // Atualiza o botão para desativado
+      const button = document.getElementById(`button-${numero}`);
+      button.classList.add('disabled');
+      button.disabled = true;
+
+      // Gera a mensagem do Pix
+      const pixMessage = `Chave Pix: ${pixKey}\nNúmero Escolhido: ${numero}\nValor da Cota: R$10.00`;
+
+      // Exibe o código Pix gerado no campo de texto
+      const pixCodeField = document.getElementById('pix-code');
+      pixCodeField.value = pixMessage;
+    });
+  }
+
+  // Carregar os números escolhidos do Firebase
+  function carregarEscolhidos() {
+    const escolhidosRef = ref(db, 'escolhidos');
+    onValue(escolhidosRef, (snapshot) => {
+      const escolhidosData = snapshot.val();
+      const escolhidos = escolhidosData ? Object.keys(escolhidosData).map(Number) : [];
+      criarBotoes(escolhidos);
+    });
+  }
+
+  // Chama a função para carregar os números escolhidos ao iniciar
+  window.onload = carregarEscolhidos;
+
+  // Evento de clique para copiar o código Pix
+  document.getElementById('copy').addEventListener('click', () => {
+    const pixCodeField = document.getElementById('pix-code');
+    pixCodeField.select();
+    document.execCommand('copy');
+    alert('Código Pix copiado para a área de transferência!');
+  });
+</script>
+
+</body>
+</html>
