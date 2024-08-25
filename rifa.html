@@ -65,13 +65,16 @@
                 button.addEventListener('click', () => chooseNumber(i));
                 buttonsContainer.appendChild(button);
 
-                // Verifica se o número já foi escolhido
+                // Verifica o status do número
                 const docRef = doc(db, 'numbers', `${i}`);
                 try {
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
-                        button.classList.add('disabled');
-                        button.disabled = true;
+                        const data = docSnap.data();
+                        if (data.paid) {
+                            button.classList.add('disabled');
+                            button.disabled = true;
+                        }
                     }
                 } catch (error) {
                     console.error("Erro ao verificar o número:", error);
@@ -84,12 +87,22 @@
             const button = document.getElementById(`button-${number}`);
             if (button.classList.contains('disabled')) return;
 
+            // Aqui você deve adicionar a lógica para verificar o pagamento
+            // Este exemplo supõe que o pagamento já foi verificado
+
+            const isPaid = true; // Substitua isso pela lógica real de verificação de pagamento
+
+            if (!isPaid) {
+                alert("Você deve pagar R$10 antes de escolher um número.");
+                return;
+            }
+
             button.classList.add('disabled');
             button.disabled = true;
 
             try {
-                await setDoc(doc(db, 'numbers', `${number}`), { chosen: true });
-                console.log(`Número ${number} escolhido com sucesso.`);
+                await setDoc(doc(db, 'numbers', `${number}`), { chosen: true, paid: true });
+                console.log(`Número ${number} escolhido e pago com sucesso.`);
             } catch (error) {
                 console.error("Erro ao escolher o número:", error);
             }
