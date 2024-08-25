@@ -5,16 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rifa</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
         .button {
             padding: 10px;
             margin: 5px;
             cursor: pointer;
             border: 1px solid #ccc;
             border-radius: 5px;
+            background-color: #f0f0f0;
         }
         .button.disabled {
             background-color: #ddd;
             cursor: not-allowed;
+        }
+        .button:active {
+            background-color: #bbb;
         }
     </style>
 </head>
@@ -25,6 +38,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
+        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBndFmOETluRi5uZ5gNwrkR0ynn9Me7omg",
             authDomain: "rifa-22ae3.firebaseapp.com",
@@ -34,11 +48,14 @@
             appId: "1:605922716743:web:7f0eff8ee06648169c9562"
         };
 
+        // Inicializa o Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Seleciona o contêiner de botões
         const buttonsContainer = document.getElementById('buttons-container');
 
+        // Configura os botões
         async function setupButtons() {
             for (let i = 1; i <= 100; i++) {
                 const button = document.createElement('button');
@@ -48,22 +65,34 @@
                 button.addEventListener('click', () => chooseNumber(i));
                 buttonsContainer.appendChild(button);
 
+                // Verifica se o número já foi escolhido
                 const docRef = doc(db, 'numbers', `${i}`);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    button.classList.add('disabled');
-                    button.disabled = true;
+                try {
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        button.classList.add('disabled');
+                        button.disabled = true;
+                    }
+                } catch (error) {
+                    console.error("Erro ao verificar o número:", error);
                 }
             }
         }
 
+        // Função para escolher um número
         async function chooseNumber(number) {
             const button = document.getElementById(`button-${number}`);
+            if (button.classList.contains('disabled')) return;
+
             button.classList.add('disabled');
             button.disabled = true;
 
-            await setDoc(doc(db, 'numbers', `${number}`), { chosen: true });
+            try {
+                await setDoc(doc(db, 'numbers', `${number}`), { chosen: true });
+                console.log(`Número ${number} escolhido com sucesso.`);
+            } catch (error) {
+                console.error("Erro ao escolher o número:", error);
+            }
         }
 
         setupButtons();
