@@ -2,24 +2,23 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Controle de Estoque</title>
+  <title>Controle de Estoque com Imagem</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f2f4f8;
-      margin: 0;
       padding: 30px;
+      margin: 0;
       color: #333;
     }
 
     h1 {
       text-align: center;
-      color: #444;
     }
 
     .container {
-      max-width: 600px;
-      margin: 0 auto;
+      max-width: 700px;
+      margin: auto;
       background: white;
       padding: 20px 30px;
       border-radius: 12px;
@@ -28,6 +27,7 @@
 
     .input-group {
       display: flex;
+      flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -37,10 +37,6 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 16px;
-    }
-
-    input[type="number"] {
-      width: 70px;
     }
 
     button {
@@ -57,12 +53,14 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 20px;
     }
 
     th, td {
       padding: 12px;
       border-bottom: 1px solid #ddd;
       text-align: left;
+      vertical-align: middle;
     }
 
     .remove-btn {
@@ -83,6 +81,13 @@
       padding: 5px;
       font-size: 14px;
     }
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -91,11 +96,14 @@
     <div class="input-group">
       <input id="nome" type="text" placeholder="Nome do produto">
       <input id="quantidade" type="number" placeholder="Quantidade">
+      <input id="foto" type="file" accept="image/*">
       <button onclick="adicionarProduto()">Adicionar</button>
     </div>
+
     <table>
       <thead>
         <tr>
+          <th>Foto</th>
           <th>Produto</th>
           <th>Quantidade</th>
           <th>Ações</th>
@@ -106,21 +114,45 @@
   </div>
 
   <script>
-    const produtos = [];
+    let produtos = JSON.parse(localStorage.getItem('estoque')) || [];
+
+    function salvarBanco() {
+      localStorage.setItem('estoque', JSON.stringify(produtos));
+    }
 
     function adicionarProduto() {
       const nome = document.getElementById('nome').value.trim();
       const quantidade = parseInt(document.getElementById('quantidade').value);
-      if (!nome || isNaN(quantidade) || quantidade <= 0) return alert('Preencha os campos corretamente.');
+      const fotoInput = document.getElementById('foto');
 
-      produtos.push({ nome, quantidade });
-      renderizarTabela();
+      if (!nome || isNaN(quantidade) || quantidade <= 0) {
+        alert('Preencha os campos corretamente.');
+        return;
+      }
+
+      if (fotoInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imagemBase64 = e.target.result;
+          produtos.push({ nome, quantidade, imagem: imagemBase64 });
+          salvarBanco();
+          renderizarTabela();
+        };
+        reader.readAsDataURL(fotoInput.files[0]);
+      } else {
+        produtos.push({ nome, quantidade, imagem: null });
+        salvarBanco();
+        renderizarTabela();
+      }
+
       document.getElementById('nome').value = '';
       document.getElementById('quantidade').value = '';
+      document.getElementById('foto').value = '';
     }
 
     function removerProduto(index) {
       produtos.splice(index, 1);
+      salvarBanco();
       renderizarTabela();
     }
 
@@ -128,6 +160,7 @@
       const valor = parseInt(novaQtd);
       if (!isNaN(valor) && valor >= 0) {
         produtos[index].quantidade = valor;
+        salvarBanco();
       }
     }
 
@@ -137,6 +170,7 @@
       produtos.forEach((p, i) => {
         tabela.innerHTML += `
           <tr>
+            <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
             <td>${p.nome}</td>
             <td>
               <input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)">
@@ -145,6 +179,8 @@
           </tr>`;
       });
     }
+
+    renderizarTabela();
   </script>
 </body>
 </html>
