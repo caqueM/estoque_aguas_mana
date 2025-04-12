@@ -158,7 +158,14 @@
       }
 
       const adicionar = (imagemBase64 = null) => {
-        produtos.push({ nome, quantidade, precoCusto, precoVenda, imagem: imagemBase64 });
+        produtos.push({
+          nome,
+          quantidade,
+          precoCusto,
+          precoVenda,
+          imagem: imagemBase64
+        });
+
         salvarBanco();
         renderizarTabela();
         limparCampos();
@@ -166,7 +173,9 @@
 
       if (fotoInput.files.length > 0) {
         const reader = new FileReader();
-        reader.onload = e => adicionar(e.target.result);
+        reader.onload = function (e) {
+          adicionar(e.target.result);
+        };
         reader.readAsDataURL(fotoInput.files[0]);
       } else {
         adicionar();
