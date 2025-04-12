@@ -206,11 +206,12 @@
 
     function renderizarTabela() {
       const tabela = document.getElementById('tabela');
-      const termo = document.getElementById('pesquisa').value.toLowerCase();
+      const pesquisaInput = document.getElementById('pesquisa');
+      const termo = pesquisaInput && pesquisaInput.value ? pesquisaInput.value.toLowerCase() : '';
       tabela.innerHTML = '';
 
       produtos.forEach((p, i) => {
-        if (!termo || p.nome.toLowerCase().includes(termo)) {
+        if (termo === '' || p.nome.toLowerCase().includes(termo)) {
           tabela.innerHTML += `
             <tr>
               <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
