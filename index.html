@@ -1,11 +1,150 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=rifa.html">
-    <title>Redirecionando...</title>
+  <meta charset="UTF-8" />
+  <title>Controle de Estoque</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    input[type="number"] {
+      width: 70px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .remove-btn {
+      background: #e74c3c;
+      border: none;
+      padding: 6px 12px;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background: #c0392b;
+    }
+
+    .quantidade-input {
+      width: 60px;
+      padding: 5px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <p>Se você não for redirecionado automaticamente, <a href="rifa.html">clique aqui</a>.</p>
+  <h1>Controle de Estoque</h1>
+  <div class="container">
+    <div class="input-group">
+      <input id="nome" type="text" placeholder="Nome do produto">
+      <input id="quantidade" type="number" placeholder="Quantidade">
+      <button onclick="adicionarProduto()">Adicionar</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const produtos = [];
+
+    function adicionarProduto() {
+      const nome = document.getElementById('nome').value.trim();
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      if (!nome || isNaN(quantidade) || quantidade <= 0) return alert('Preencha os campos corretamente.');
+
+      produtos.push({ nome, quantidade });
+      renderizarTabela();
+      document.getElementById('nome').value = '';
+      document.getElementById('quantidade').value = '';
+    }
+
+    function removerProduto(index) {
+      produtos.splice(index, 1);
+      renderizarTabela();
+    }
+
+    function atualizarQuantidade(index, novaQtd) {
+      const valor = parseInt(novaQtd);
+      if (!isNaN(valor) && valor >= 0) {
+        produtos[index].quantidade = valor;
+      }
+    }
+
+    function renderizarTabela() {
+      const tabela = document.getElementById('tabela');
+      tabela.innerHTML = '';
+      produtos.forEach((p, i) => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${p.nome}</td>
+            <td>
+              <input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)">
+            </td>
+            <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
+          </tr>`;
+      });
+    }
+  </script>
 </body>
 </html>
