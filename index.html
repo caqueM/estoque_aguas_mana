@@ -2,12 +2,13 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Controle de Estoque com Imagem</title>
+  <title>Controle de Estoque</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f2f4f8;
-      padding: 30px;
+      padding: 20px;
       margin: 0;
       color: #333;
     }
@@ -17,10 +18,10 @@
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
       background: white;
-      padding: 20px 30px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
@@ -54,10 +55,11 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      overflow-x: auto;
     }
 
     th, td {
-      padding: 12px;
+      padding: 10px;
       border-bottom: 1px solid #ddd;
       text-align: left;
       vertical-align: middle;
@@ -92,6 +94,17 @@
     .search-box {
       margin-bottom: 15px;
     }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 13px;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -100,6 +113,8 @@
     <div class="input-group">
       <input id="nome" type="text" placeholder="Nome do produto">
       <input id="quantidade" type="number" placeholder="Quantidade">
+      <input id="precoCusto" type="number" step="0.01" placeholder="Preço de Custo (R$)">
+      <input id="precoVenda" type="number" step="0.01" placeholder="Preço de Venda (R$)">
       <input id="foto" type="file" accept="image/*">
       <button onclick="adicionarProduto()">Adicionar</button>
     </div>
@@ -114,6 +129,8 @@
           <th>Foto</th>
           <th>Produto</th>
           <th>Quantidade</th>
+          <th>Preço Custo</th>
+          <th>Preço Venda</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -131,30 +148,36 @@
     function adicionarProduto() {
       const nome = document.getElementById('nome').value.trim();
       const quantidade = parseInt(document.getElementById('quantidade').value);
+      const precoCusto = parseFloat(document.getElementById('precoCusto').value);
+      const precoVenda = parseFloat(document.getElementById('precoVenda').value);
       const fotoInput = document.getElementById('foto');
 
-      if (!nome || isNaN(quantidade) || quantidade <= 0) {
-        alert('Preencha os campos corretamente.');
+      if (!nome || isNaN(quantidade) || quantidade <= 0 || isNaN(precoCusto) || isNaN(precoVenda)) {
+        alert('Preencha todos os campos corretamente.');
         return;
       }
 
-      if (fotoInput.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const imagemBase64 = e.target.result;
-          produtos.push({ nome, quantidade, imagem: imagemBase64 });
-          salvarBanco();
-          renderizarTabela();
-        };
-        reader.readAsDataURL(fotoInput.files[0]);
-      } else {
-        produtos.push({ nome, quantidade, imagem: null });
+      const adicionar = (imagemBase64 = null) => {
+        produtos.push({ nome, quantidade, precoCusto, precoVenda, imagem: imagemBase64 });
         salvarBanco();
         renderizarTabela();
-      }
+        limparCampos();
+      };
 
+      if (fotoInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = e => adicionar(e.target.result);
+        reader.readAsDataURL(fotoInput.files[0]);
+      } else {
+        adicionar();
+      }
+    }
+
+    function limparCampos() {
       document.getElementById('nome').value = '';
       document.getElementById('quantidade').value = '';
+      document.getElementById('precoCusto').value = '';
+      document.getElementById('precoVenda').value = '';
       document.getElementById('foto').value = '';
     }
 
@@ -183,9 +206,9 @@
             <tr>
               <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
               <td>${p.nome}</td>
-              <td>
-                <input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)">
-              </td>
+              <td><input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)"></td>
+              <td>R$ ${p.precoCusto.toFixed(2)}</td>
+              <td>R$ ${p.precoVenda.toFixed(2)}</td>
               <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
             </tr>`;
         }
