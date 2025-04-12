@@ -88,6 +88,10 @@
       object-fit: cover;
       border-radius: 6px;
     }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -98,6 +102,10 @@
       <input id="quantidade" type="number" placeholder="Quantidade">
       <input id="foto" type="file" accept="image/*">
       <button onclick="adicionarProduto()">Adicionar</button>
+    </div>
+
+    <div class="search-box">
+      <input type="text" id="pesquisa" placeholder="Pesquisar produto..." oninput="renderizarTabela()">
     </div>
 
     <table>
@@ -166,17 +174,21 @@
 
     function renderizarTabela() {
       const tabela = document.getElementById('tabela');
+      const termo = document.getElementById('pesquisa').value.toLowerCase();
       tabela.innerHTML = '';
+
       produtos.forEach((p, i) => {
-        tabela.innerHTML += `
-          <tr>
-            <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
-            <td>${p.nome}</td>
-            <td>
-              <input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)">
-            </td>
-            <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
-          </tr>`;
+        if (!termo || p.nome.toLowerCase().includes(termo)) {
+          tabela.innerHTML += `
+            <tr>
+              <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
+              <td>${p.nome}</td>
+              <td>
+                <input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)">
+              </td>
+              <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
+            </tr>`;
+        }
       });
     }
 
