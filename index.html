@@ -1,137 +1,101 @@
-<!DOCTYPE html><html lang="pt-br">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estoque de Águas Maná</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Águas Maná - Estoque</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #3e1c92, #6b1e6a);
+      background: linear-gradient(135deg, #3f2b96, #a8c0ff);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      height: 100vh;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: start;
+      height: 100vh;
+    }
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       color: #fff;
-    }h1 {
-  margin-top: 30px;
-  font-size: 2em;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.container {
-  width: 90%;
-  max-width: 800px;
-  margin-top: 20px;
-  padding: 30px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(10px);
-}
-
-input, button {
-  padding: 10px;
-  margin: 10px 5px;
-  border-radius: 10px;
-  border: none;
-  font-size: 1em;
-}
-
-input {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  width: calc(100% - 20px);
-}
-
-input::placeholder {
-  color: #ddd;
-}
-
-button {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-.produto {
-  background: rgba(255, 255, 255, 0.2);
-  margin: 10px 0;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.produto span {
-  display: block;
-  margin: 5px 0;
-}
-
+      max-width: 400px;
+      width: 100%;
+    }
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    .form-group input::placeholder {
+      color: #ddd;
+    }
+    .form-group input:focus {
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .login-btn:hover {
+      background: linear-gradient(90deg, #764ba2, #667eea);
+    }
   </style>
 </head>
 <body>
-  <h1>Estoque de Águas Maná</h1>
-  <div class="container">
-    <input type="text" id="nome" placeholder="Nome do produto">
-    <input type="number" id="quantidade" placeholder="Quantidade">
-    <input type="number" id="vendas" placeholder="Quantidade de vendas">
-    <input type="number" id="custo" placeholder="Preço de custo">
-    <input type="number" id="venda" placeholder="Preço de venda">
-    <input type="number" id="retirada" placeholder="Preço de retirada">
-    <button onclick="adicionarProduto()">Adicionar Produto</button>
-    <input type="text" id="pesquisa" placeholder="Buscar produto..." oninput="filtrarProdutos()">
-    <div id="estoque"></div>
+  <div class="login-container">
+    <h2>Criação de Conta - Águas Maná</h2>
+    <div class="form-group">
+      <label for="store-name">Nome da Loja</label>
+      <input type="text" id="store-name" placeholder="Ex: Águas Maná" />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Digite seu email" />
+    </div>
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input type="password" id="password" placeholder="Digite sua senha" />
+    </div>
+    <button class="login-btn" onclick="registerUser()">Criar Conta</button>
   </div>  <script>
-    const produtos = [];
+    function registerUser() {
+      const storeName = document.getElementById("store-name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    function adicionarProduto() {
-      const nome = document.getElementById('nome').value;
-      const quantidade = parseInt(document.getElementById('quantidade').value);
-      const vendas = parseInt(document.getElementById('vendas').value);
-      const custo = parseFloat(document.getElementById('custo').value);
-      const venda = parseFloat(document.getElementById('venda').value);
-      const retirada = parseFloat(document.getElementById('retirada').value);
+      if (!storeName || !email || !password) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+      }
 
-      if (!nome || isNaN(quantidade)) return;
-
-      produtos.push({ nome, quantidade, vendas, custo, venda, retirada });
-      document.getElementById('nome').value = '';
-      document.getElementById('quantidade').value = '';
-      document.getElementById('vendas').value = '';
-      document.getElementById('custo').value = '';
-      document.getElementById('venda').value = '';
-      document.getElementById('retirada').value = '';
-      exibirProdutos();
-    }
-
-    function exibirProdutos(lista = produtos) {
-      const estoqueDiv = document.getElementById('estoque');
-      estoqueDiv.innerHTML = '';
-      lista.forEach((produto, index) => {
-        estoqueDiv.innerHTML += `
-          <div class="produto">
-            <span><strong>${produto.nome}</strong></span>
-            <span>Quantidade: ${produto.quantidade}</span>
-            <span>Vendidos: ${produto.vendas}</span>
-            <span>Preço de custo: R$${produto.custo.toFixed(2)}</span>
-            <span>Preço de venda: R$${produto.venda.toFixed(2)}</span>
-            <span>Preço de retirada: R$${produto.retirada.toFixed(2)}</span>
-          </div>
-        `;
-      });
-    }
-
-    function filtrarProdutos() {
-      const termo = document.getElementById('pesquisa').value.toLowerCase();
-      const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
-      exibirProdutos(filtrados);
+      alert(`Conta criada para a loja "${storeName}" com email: ${email}`);
+      // Aqui você pode redirecionar para a tela de login ou estoque, ou salvar os dados em localStorage/database
     }
   </script></body>
 </html>
