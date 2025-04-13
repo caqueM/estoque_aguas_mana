@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Estoque de Águas Maná</title>
+  <title>Estoque de Águas Maná</title>
   <style>
     body {
       margin: 0;
@@ -12,88 +11,127 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-    }
-
-    .login-box {
-      width: 320px;
-      padding: 40px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(10px);
+      justify-content: start;
       color: #fff;
-      text-align: center;
-    }
+    }h1 {
+  margin-top: 30px;
+  font-size: 2em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
 
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
-      background-size: cover;
-      margin: 0 auto 20px;
-    }
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin-top: 20px;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(10px);
+}
 
-    .login-box input[type="email"],
-    .login-box input[type="password"] {
-      width: 100%;
-      padding: 10px 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 16px;
-      outline: none;
-    }
+input, button {
+  padding: 10px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1em;
+}
 
-    .login-box input::placeholder {
-      color: #ddd;
-    }
+input {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: calc(100% - 20px);
+}
 
-    .options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      margin: 10px 0;
-    }
+input::placeholder {
+  color: #ddd;
+}
 
-    .login-box button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+button {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
 
-    .login-box button:hover {
-      transform: scale(1.05);
-    }
+button:hover {
+  transform: scale(1.05);
+}
 
-    label {
-      cursor: pointer;
-    }
+.produto {
+  background: rgba(255, 255, 255, 0.2);
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.produto span {
+  display: block;
+  margin: 5px 0;
+}
+
   </style>
 </head>
 <body>
-  <div class="login-box">
-    <div class="avatar"></div>
-    <form>
-      <input type="email" placeholder="Email ID" required>
-      <input type="password" placeholder="Password" required>
-      <div class="options">
-        <label><input type="checkbox"> Remember me</label>
-        <a href="#" style="color: #ccc;">Forgot Password?</a>
-      </div>
-      <button type="submit">LOGIN</button>
-    </form>
-  </div>
-</body>
+  <h1>Estoque de Águas Maná</h1>
+  <div class="container">
+    <input type="text" id="nome" placeholder="Nome do produto">
+    <input type="number" id="quantidade" placeholder="Quantidade">
+    <input type="number" id="vendas" placeholder="Quantidade de vendas">
+    <input type="number" id="custo" placeholder="Preço de custo">
+    <input type="number" id="venda" placeholder="Preço de venda">
+    <input type="number" id="retirada" placeholder="Preço de retirada">
+    <button onclick="adicionarProduto()">Adicionar Produto</button>
+    <input type="text" id="pesquisa" placeholder="Buscar produto..." oninput="filtrarProdutos()">
+    <div id="estoque"></div>
+  </div>  <script>
+    const produtos = [];
+
+    function adicionarProduto() {
+      const nome = document.getElementById('nome').value;
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const vendas = parseInt(document.getElementById('vendas').value);
+      const custo = parseFloat(document.getElementById('custo').value);
+      const venda = parseFloat(document.getElementById('venda').value);
+      const retirada = parseFloat(document.getElementById('retirada').value);
+
+      if (!nome || isNaN(quantidade)) return;
+
+      produtos.push({ nome, quantidade, vendas, custo, venda, retirada });
+      document.getElementById('nome').value = '';
+      document.getElementById('quantidade').value = '';
+      document.getElementById('vendas').value = '';
+      document.getElementById('custo').value = '';
+      document.getElementById('venda').value = '';
+      document.getElementById('retirada').value = '';
+      exibirProdutos();
+    }
+
+    function exibirProdutos(lista = produtos) {
+      const estoqueDiv = document.getElementById('estoque');
+      estoqueDiv.innerHTML = '';
+      lista.forEach((produto, index) => {
+        estoqueDiv.innerHTML += `
+          <div class="produto">
+            <span><strong>${produto.nome}</strong></span>
+            <span>Quantidade: ${produto.quantidade}</span>
+            <span>Vendidos: ${produto.vendas}</span>
+            <span>Preço de custo: R$${produto.custo.toFixed(2)}</span>
+            <span>Preço de venda: R$${produto.venda.toFixed(2)}</span>
+            <span>Preço de retirada: R$${produto.retirada.toFixed(2)}</span>
+          </div>
+        `;
+      });
+    }
+
+    function filtrarProdutos() {
+      const termo = document.getElementById('pesquisa').value.toLowerCase();
+      const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
+      exibirProdutos(filtrados);
+    }
+  </script></body>
 </html>
