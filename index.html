@@ -2,100 +2,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Águas Maná - Estoque</title>
+  <title>Login - Estoque de Águas Maná</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #3f2b96, #a8c0ff);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(145deg, #4e0066, #001f3f);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-    }
-    .login-container {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 40px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       color: #fff;
-      max-width: 400px;
-      width: 100%;
     }
-    .login-container h2 {
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 400px;
+    }
+    .container h2 {
       text-align: center;
       margin-bottom: 30px;
-      font-size: 24px;
     }
     .form-group {
       margin-bottom: 20px;
     }
     .form-group label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     .form-group input {
       width: 100%;
       padding: 10px;
       border: none;
-      border-radius: 10px;
-      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
       color: #fff;
     }
     .form-group input::placeholder {
-      color: #ddd;
+      color: #ccc;
     }
-    .form-group input:focus {
-      outline: none;
-      background-color: rgba(255, 255, 255, 0.3);
-    }
-    .login-btn {
+    .btn {
       width: 100%;
       padding: 12px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
+      background: linear-gradient(to right, #6a11cb, #2575fc);
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s ease;
     }
-    .login-btn:hover {
-      background: linear-gradient(90deg, #764ba2, #667eea);
+    .btn:hover {
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .switch-link a {
+      color: #a2d2ff;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Criação de Conta - Águas Maná</h2>
-    <div class="form-group">
-      <label for="store-name">Nome da Loja</label>
-      <input type="text" id="store-name" placeholder="Ex: Águas Maná" />
+  <div class="container">
+    <h2>Login - Estoque de Águas Maná</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu email" required />
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required />
+      </div>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+    <div class="switch-link">
+      <p>Não tem uma conta? <a href="#">Criar Conta</a></p>
     </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Digite seu email" />
-    </div>
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input type="password" id="password" placeholder="Digite sua senha" />
-    </div>
-    <button class="login-btn" onclick="registerUser()">Criar Conta</button>
-  </div>  <script>
-    function registerUser() {
-      const storeName = document.getElementById("store-name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      if (!storeName || !email || !password) {
-        alert("Por favor, preencha todos os campos.");
-        return;
-      }
-
-      alert(`Conta criada para a loja "${storeName}" com email: ${email}`);
-      // Aqui você pode redirecionar para a tela de login ou estoque, ou salvar os dados em localStorage/database
-    }
-  </script></body>
+  </div>
+</body>
 </html>
