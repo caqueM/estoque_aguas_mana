@@ -55,7 +55,6 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      overflow-x: auto;
     }
 
     th, td {
@@ -207,21 +206,23 @@
     function renderizarTabela() {
       const tabela = document.getElementById('tabela');
       const pesquisaInput = document.getElementById('pesquisa');
-      const termo = pesquisaInput && pesquisaInput.value ? pesquisaInput.value.toLowerCase() : '';
+      const termo = pesquisaInput ? pesquisaInput.value.toLowerCase() : '';
       tabela.innerHTML = '';
 
-      produtos.forEach((p, i) => {
-        if (termo === '' || p.nome.toLowerCase().includes(termo)) {
-          tabela.innerHTML += `
-            <tr>
-              <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
-              <td>${p.nome}</td>
-              <td><input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)"></td>
-              <td>R$ ${p.precoCusto.toFixed(2)}</td>
-              <td>R$ ${p.precoVenda.toFixed(2)}</td>
-              <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
-            </tr>`;
-        }
+      const listaFiltrada = termo
+        ? produtos.filter(p => p.nome.toLowerCase().includes(termo))
+        : produtos;
+
+      listaFiltrada.forEach((p, i) => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
+            <td>${p.nome}</td>
+            <td><input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)"></td>
+            <td>R$ ${p.precoCusto.toFixed(2)}</td>
+            <td>R$ ${p.precoVenda.toFixed(2)}</td>
+            <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
+          </tr>`;
       });
     }
 
