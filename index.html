@@ -1,234 +1,126 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Controle de Estoque</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f4f8;
-      padding: 20px;
-      margin: 0;
-      color: #333;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    input, button {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background: #4CAF50;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #45a049;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    .remove-btn {
-      background: #e74c3c;
-      border: none;
-      padding: 6px 12px;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .remove-btn:hover {
-      background: #c0392b;
-    }
-
-    .quantidade-input {
-      width: 60px;
-      padding: 5px;
-      font-size: 14px;
-    }
-
-    img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-
-    .search-box {
-      margin-bottom: 15px;
-    }
-
-    @media (max-width: 600px) {
-      th, td {
-        font-size: 13px;
-      }
-
-      img {
-        width: 40px;
-        height: 40px;
-      }
-    }
-  </style>
+  <title>Controle de Estoque</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Controle de Estoque</h1>
-  <div class="container">
-    <div class="input-group">
-      <input id="nome" type="text" placeholder="Nome do produto">
-      <input id="quantidade" type="number" placeholder="Quantidade">
-      <input id="precoCusto" type="number" step="0.01" placeholder="Preço de Custo (R$)">
-      <input id="precoVenda" type="number" step="0.01" placeholder="Preço de Venda (R$)">
-      <input id="foto" type="file" accept="image/*">
-      <button onclick="adicionarProduto()">Adicionar</button>
-    </div>
-
-    <div class="search-box">
-      <input type="text" id="pesquisa" placeholder="Pesquisar produto..." oninput="renderizarTabela()">
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Foto</th>
-          <th>Produto</th>
-          <th>Quantidade</th>
-          <th>Preço Custo</th>
-          <th>Preço Venda</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tabela"></tbody>
-    </table>
+  <div class="container py-4">
+    <h2 class="mb-4 text-center">Controle de Estoque</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-section">
+          <h5>Adicionar Produto</h5>
+          <form id="produto-form">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" id="nome" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantidade</label>
+              <input type="number" class="form-control" id="quantidade" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preço de Custo</label>
+              <input type="number" step="0.01" class="form-control" id="custo" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preço de Venda</label>
+              <input type="number" step="0.01" class="form-control" id="venda" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Imagem</label>
+              <input type="file" class="form-control" id="imagem" accept="image/*" />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Adicionar</button>
+          </form>
+        </div>
+      </div><div class="col-md-8">
+    <input type="text" class="form-control mb-3" id="busca" placeholder="Buscar produto...">
+    <div id="lista-produtos" class="row"></div>
   </div>
+</div>
 
-  <script>
-    let produtos = JSON.parse(localStorage.getItem('estoque')) || [];
+  </div>  <script>
+    let produtos = [];
 
-    function salvarBanco() {
-      localStorage.setItem('estoque', JSON.stringify(produtos));
-    }
-
-    function adicionarProduto() {
-      const nome = document.getElementById('nome').value.trim();
+    document.getElementById('produto-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value;
       const quantidade = parseInt(document.getElementById('quantidade').value);
-      const precoCusto = parseFloat(document.getElementById('precoCusto').value);
-      const precoVenda = parseFloat(document.getElementById('precoVenda').value);
-      const fotoInput = document.getElementById('foto');
+      const custo = document.getElementById('custo').value;
+      const venda = document.getElementById('venda').value;
+      const imagemInput = document.getElementById('imagem');
+      let imagemUrl = '';
 
-      if (!nome || isNaN(quantidade) || quantidade <= 0 || isNaN(precoCusto) || isNaN(precoVenda)) {
-        alert('Preencha todos os campos corretamente.');
-        return;
-      }
-
-      const adicionar = (imagemBase64 = null) => {
-        produtos.push({
-          nome,
-          quantidade,
-          precoCusto,
-          precoVenda,
-          imagem: imagemBase64
-        });
-
-        salvarBanco();
-        renderizarTabela();
-        limparCampos();
-      };
-
-      if (fotoInput.files.length > 0) {
+      if (imagemInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-          adicionar(e.target.result);
+          imagemUrl = e.target.result;
+          adicionarProduto(nome, quantidade, custo, venda, imagemUrl);
         };
-        reader.readAsDataURL(fotoInput.files[0]);
+        reader.readAsDataURL(imagemInput.files[0]);
       } else {
-        adicionar();
+        adicionarProduto(nome, quantidade, custo, venda, imagemUrl);
       }
+
+      this.reset();
+    });
+
+    document.getElementById('busca').addEventListener('input', function () {
+      renderizarProdutos(this.value);
+    });
+
+    function adicionarProduto(nome, quantidade, custo, venda, imagem) {
+      produtos.push({ nome, quantidade, custo, venda, imagem });
+      renderizarProdutos();
     }
 
-    function limparCampos() {
-      document.getElementById('nome').value = '';
-      document.getElementById('quantidade').value = '';
-      document.getElementById('precoCusto').value = '';
-      document.getElementById('precoVenda').value = '';
-      document.getElementById('foto').value = '';
+    function renderizarProdutos(filtro = '') {
+      const lista = document.getElementById('lista-produtos');
+      lista.innerHTML = '';
+      produtos
+        .filter(p => p.nome.toLowerCase().includes(filtro.toLowerCase()))
+        .forEach((p, i) => {
+          const card = document.createElement('div');
+          card.className = 'col-md-6';
+          card.innerHTML = `
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">${p.nome}</h5>
+                <p class="card-text">
+                  Quantidade: <span id="qtd-${i}">${p.quantidade}</span><br>
+                  Custo: R$ ${p.custo}<br>
+                  Venda: R$ ${p.venda}
+                </p>
+                ${p.imagem ? `<img src="${p.imagem}" class="img-fluid" style="max-height: 150px;" />` : ''}
+                <div class="mt-2">
+                  <input type="number" min="1" placeholder="Quantidade vendida" class="form-control form-control-sm d-inline w-50" id="venda-qtd-${i}">
+                  <button class="btn btn-success btn-sm" onclick="registrarVenda(${i})">Vender</button>
+                  <button class="btn btn-danger btn-sm" onclick="removerProduto(${i})">Remover</button>
+                </div>
+              </div>
+            </div>`;
+          lista.appendChild(card);
+        });
+    }
+
+    function registrarVenda(index) {
+      const vendaQtdInput = document.getElementById(`venda-qtd-${index}`);
+      const qtdVendida = parseInt(vendaQtdInput.value);
+      if (!isNaN(qtdVendida) && qtdVendida > 0 && produtos[index].quantidade >= qtdVendida) {
+        produtos[index].quantidade -= qtdVendida;
+        renderizarProdutos(document.getElementById('busca').value);
+      } else {
+        alert('Quantidade inválida para venda!');
+      }
     }
 
     function removerProduto(index) {
       produtos.splice(index, 1);
-      salvarBanco();
-      renderizarTabela();
+      renderizarProdutos(document.getElementById('busca').value);
     }
-
-    function atualizarQuantidade(index, novaQtd) {
-      const valor = parseInt(novaQtd);
-      if (!isNaN(valor) && valor >= 0) {
-        produtos[index].quantidade = valor;
-        salvarBanco();
-      }
-    }
-
-    function renderizarTabela() {
-      const tabela = document.getElementById('tabela');
-      const pesquisaInput = document.getElementById('pesquisa');
-      const termo = pesquisaInput ? pesquisaInput.value.toLowerCase() : '';
-      tabela.innerHTML = '';
-
-      const listaFiltrada = termo
-        ? produtos.filter(p => p.nome.toLowerCase().includes(termo))
-        : produtos;
-
-      listaFiltrada.forEach((p, i) => {
-        tabela.innerHTML += `
-          <tr>
-            <td>${p.imagem ? `<img src="${p.imagem}">` : ''}</td>
-            <td>${p.nome}</td>
-            <td><input type="number" class="quantidade-input" value="${p.quantidade}" onchange="atualizarQuantidade(${i}, this.value)"></td>
-            <td>R$ ${p.precoCusto.toFixed(2)}</td>
-            <td>R$ ${p.precoVenda.toFixed(2)}</td>
-            <td><button class="remove-btn" onclick="removerProduto(${i})">Remover</button></td>
-          </tr>`;
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      renderizarTabela();
-    });
-  </script>
-</body>
+  </script></body>
 </html>
