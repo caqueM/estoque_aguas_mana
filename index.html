@@ -1,183 +1,99 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estoque de Águas Maná</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Estoque de Águas Maná</title>
   <style>
     body {
-      background-color: #f0f8ff;
-      animation: fadeIn 0.8s ease-in;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #3e1c92, #6b1e6a);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .form-section {
-      background-color: #e6f2ff;
-      padding: 20px;
-      border-radius: 8px;
-      animation: slideUp 1s ease-in-out;
+
+    .login-box {
+      width: 320px;
+      padding: 40px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      text-align: center;
     }
-    .card {
-      background-color: #fffaf0;
-      border: 1px solid #ccc;
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
+      background-size: cover;
+      margin: 0 auto 20px;
+    }
+
+    .login-box input[type="email"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border: none;
       border-radius: 10px;
-      transition: transform 0.3s;
-      animation: fadeInCard 0.8s ease-in;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
     }
-    .card:hover {
-      transform: scale(1.02);
-    }
-    .card-title {
-      color: #0077cc;
-    }
-    .btn-primary {
-      background-color: #0077cc;
-      border: none;
-    }
-    .btn-success {
-      background-color: #28a745;
-      border: none;
-    }
-    .btn-danger {
-      background-color: #dc3545;
-      border: none;
-    }@keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-}
 
-@keyframes slideUp {
-  0% {transform: translateY(30px); opacity: 0;}
-  100% {transform: translateY(0); opacity: 1;}
-}
+    .login-box input::placeholder {
+      color: #ddd;
+    }
 
-@keyframes fadeInCard {
-  0% {opacity: 0; transform: scale(0.95);}
-  100% {opacity: 1; transform: scale(1);}
-}
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin: 10px 0;
+    }
 
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .login-box button:hover {
+      transform: scale(1.05);
+    }
+
+    label {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="container py-4">
-    <h2 class="mb-4 text-center text-primary">Estoque de Águas Maná</h2>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-section">
-          <h5>Adicionar Produto</h5>
-          <form id="produto-form">
-            <div class="mb-3">
-              <label class="form-label">Nome</label>
-              <input type="text" class="form-control" id="nome" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Quantidade</label>
-              <input type="number" class="form-control" id="quantidade" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Preço de Custo</label>
-              <input type="number" step="0.01" class="form-control" id="custo" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Preço de Venda</label>
-              <input type="number" step="0.01" class="form-control" id="venda" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Preço de Retirada</label>
-              <input type="number" step="0.01" class="form-control" id="retirada" required />
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Imagem</label>
-              <input type="file" class="form-control" id="imagem" accept="image/*" />
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Adicionar</button>
-          </form>
-        </div>
-      </div><div class="col-md-8">
-    <input type="text" class="form-control mb-3" id="busca" placeholder="Buscar produto...">
-    <div id="lista-produtos" class="row"></div>
+  <div class="login-box">
+    <div class="avatar"></div>
+    <form>
+      <input type="email" placeholder="Email ID" required>
+      <input type="password" placeholder="Password" required>
+      <div class="options">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="#" style="color: #ccc;">Forgot Password?</a>
+      </div>
+      <button type="submit">LOGIN</button>
+    </form>
   </div>
-</div>
-
-  </div>  <script>
-    let produtos = [];
-
-    document.getElementById('produto-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const nome = document.getElementById('nome').value;
-      const quantidade = parseInt(document.getElementById('quantidade').value);
-      const custo = document.getElementById('custo').value;
-      const venda = document.getElementById('venda').value;
-      const retirada = document.getElementById('retirada').value;
-      const imagemInput = document.getElementById('imagem');
-      let imagemUrl = '';
-
-      if (imagemInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          imagemUrl = e.target.result;
-          adicionarProduto(nome, quantidade, custo, venda, retirada, imagemUrl);
-        };
-        reader.readAsDataURL(imagemInput.files[0]);
-      } else {
-        adicionarProduto(nome, quantidade, custo, venda, retirada, imagemUrl);
-      }
-
-      this.reset();
-    });
-
-    document.getElementById('busca').addEventListener('input', function () {
-      renderizarProdutos(this.value);
-    });
-
-    function adicionarProduto(nome, quantidade, custo, venda, retirada, imagem) {
-      produtos.push({ nome, quantidade, custo, venda, retirada, imagem });
-      renderizarProdutos();
-    }
-
-    function renderizarProdutos(filtro = '') {
-      const lista = document.getElementById('lista-produtos');
-      lista.innerHTML = '';
-      produtos
-        .filter(p => p.nome.toLowerCase().includes(filtro.toLowerCase()))
-        .forEach((p, i) => {
-          const card = document.createElement('div');
-          card.className = 'col-md-6';
-          card.innerHTML = `
-            <div class="card mb-3 animate__animated animate__fadeIn">
-              <div class="card-body">
-                <h5 class="card-title">${p.nome}</h5>
-                <p class="card-text">
-                  Quantidade: <span id="qtd-${i}">${p.quantidade}</span><br>
-                  Custo: R$ ${p.custo}<br>
-                  Venda: R$ ${p.venda}<br>
-                  Retirada: R$ ${p.retirada}
-                </p>
-                ${p.imagem ? `<img src="${p.imagem}" class="img-fluid" style="max-height: 150px;" />` : ''}
-                <div class="mt-2">
-                  <input type="number" min="1" placeholder="Quantidade vendida" class="form-control form-control-sm d-inline w-50" id="venda-qtd-${i}">
-                  <button class="btn btn-success btn-sm" onclick="registrarVenda(${i})">Vender</button>
-                  <button class="btn btn-danger btn-sm" onclick="removerProduto(${i})">Remover</button>
-                </div>
-              </div>
-            </div>`;
-          lista.appendChild(card);
-        });
-    }
-
-    function registrarVenda(index) {
-      const vendaQtdInput = document.getElementById(`venda-qtd-${index}`);
-      const qtdVendida = parseInt(vendaQtdInput.value);
-      if (!isNaN(qtdVendida) && qtdVendida > 0 && produtos[index].quantidade >= qtdVendida) {
-        produtos[index].quantidade -= qtdVendida;
-        renderizarProdutos(document.getElementById('busca').value);
-      } else {
-        alert('Quantidade inválida para venda!');
-      }
-    }
-
-    function removerProduto(index) {
-      produtos.splice(index, 1);
-      renderizarProdutos(document.getElementById('busca').value);
-    }
-  </script></body>
+</body>
 </html>
